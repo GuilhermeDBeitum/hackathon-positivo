@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+    <title>Anagramas</title>
+</head>
+
+<body>
+
+
+<h1>ANAGRAMAS</h1>
+
+        <input type="text" name="anagrama" id="anagrama">
+        <input type="submit" name="botao" value="ENVIAR" onclick="remontaAnagrama(anagrama)">
+        
+   
+    
+
+
+    <div class="result">
+        <p id="saida1"></p>
+        <p id="saida2"></p>
+        <p id="saida3"></p>
+
+
+        <script>
+            /* Método para fazer a requisição http */
+            var getJSON = function (url, sucesso, erro) {
+                var httpRequest = new XMLHttpRequest();
+                httpRequest.open("GET", url, true);
+                httpRequest.responseType = "json";
+                httpRequest.addEventListener("readystatechange", function (event) {
+                    if (httpRequest.readyState == 4) {
+                        if (httpRequest.status == 200) {
+                            if (sucesso) sucesso(httpRequest.response);
+                        } else {
+                            if (erro) erro(httpRequest.status, httpRequest.statusText);
+                        }
+                    }
+                });
+
+                httpRequest.send();
+            }
+
+            /* chamando o arquivo Json */
+            getJSON('anagramas.json', function (data) {
+                var lista = "<ul>\n";
+                for (var i in data) {
+                    lista += '<li>palavra: ' + data[i].anagramas + '<li>'
+                }
+                lista += "\n</ul>";
+                /* procuro o elemento através da sua id
+                   e imprimo o conteúdo */
+                document.getElementById('saida3').innerHTML = lista;
+            });
+
+
+            function remontaAnagrama(anagrama) {
+
+                /* capturo a palavra do input e a jogo dentro de uma variavel */
+
+                var ini = document.getElementById('anagrama').value;
+
+                /* Converto todos os caracteres para maiúsculos */
+
+                var anagr = ini.toUpperCase()
+
+                /* verifico os caracteres validos */
+
+                function check(anagr) {
+                    var Check = /^[a-zA-Z ]*$/;
+                    if (Check.test(anagr)) {
+
+                        /* criando o anagrama */
+
+                        function criaAnagrama(anagr) {
+
+                            var x = anagr.split("");
+                            x.sort();
+                            return x.join("")
+                        }
+
+                        var anagrama = criaAnagrama(anagr)
+
+                        /* revertendo, trasformando o anagrama em palavra */
+
+                        var base = criaAnagrama(anagr);
+
+                        var paraCheck = [anagrama];
+
+                        /* aqui pego o valor do anagrama gerado e reverto. */
+
+                        var remonta = [];
+                        for (index = 0; index < paraCheck.length; index++) {
+                            if (base === criaAnagrama(paraCheck[index])) {
+                                remonta.push(paraCheck[index]);
+                            }
+
+
+                            /* aqui tiro o print do resultado do anagrama montado pelo input */
+
+                            document.getElementById("saida1").innerHTML = remonta;
+
+                        }
+
+                        /* crio um novo array com todos os elementos 
+                        que passaram no teste. */
+
+                        var remonta2 = lista.filter(paraCheck, function (anagrama) {
+                            if (base === criaAnagrama(anagramas)) {
+                                anagrama.push(anagrama);
+                                return true;
+             
+             
+                            console.log(remonta2)
+              
+                            }
+
+                            /* aqui tiro o print do resultado do anagrama trazido do arquivo json */
+
+                            document.getElementById("saida2").innerHTML = remonta2;
+                        });
+
+
+                    } else {
+                        alert("Caracteres não Validos!");
+                        return;
+                    }
+                }
+                check(anagr);
+
+            }
+        </script>
+
+    </div>
+
+</body>
+
+</html>
