@@ -12,51 +12,42 @@
 <body>
 
 
-<h1>ANAGRAMAS</h1>
+    <h1>ANAGRAMAS</h1>
 
-        <input type="text" name="anagrama" id="anagrama">
-        <input type="submit" name="botao" value="ENVIAR" onclick="remontaAnagrama(anagrama)">
-        
-   
-    
+    <input type="text" name="anagrama" id="anagrama">
+    <input type="submit" name="botao" value="ENVIAR" onclick="remontaAnagrama(anagrama)">
+
+
+
 
 
     <div class="result">
+
         <p id="saida1"></p>
         <p id="saida2"></p>
-        <p id="saida3"></p>
+
 
 
         <script>
-            /* Método para fazer a requisição http */
-            var getJSON = function (url, sucesso, erro) {
-                var httpRequest = new XMLHttpRequest();
-                httpRequest.open("GET", url, true);
-                httpRequest.responseType = "json";
-                httpRequest.addEventListener("readystatechange", function (event) {
-                    if (httpRequest.readyState == 4) {
-                        if (httpRequest.status == 200) {
-                            if (sucesso) sucesso(httpRequest.response);
-                        } else {
-                            if (erro) erro(httpRequest.status, httpRequest.statusText);
-                        }
-                    }
+            /* Método para fazer a requisição do arquivo Json */
+
+            fetch("anagramas.json")
+                .then(response => response.json())
+                .then(json => {
+                    var listaAnagramaImportado = json;
+                    listaAnagramaImportado = listaAnagramaImportado[0].anagramas;
+                    var lista = "<ul>";
+                    listaAnagramaImportado.forEach(item => {
+                        lista += '<li>palavra: ' + item + '<li>'
+                    });
+                    lista += "\n</ul>";
+
+                    /* procuro o elemento através da sua id e imprimo o conteúdo,
+                       *essa saida esta como opcional* 
+                         serve para mostrar a lista geral dos anagramas */
+
+                    document.getElementById('saida3').innerHTML = lista;
                 });
-
-                httpRequest.send();
-            }
-
-            /* chamando o arquivo Json */
-            getJSON('anagramas.json', function (data) {
-                var lista = "<ul>\n";
-                for (var i in data) {
-                    lista += '<li>palavra: ' + data[i].anagramas + '<li>'
-                }
-                lista += "\n</ul>";
-                /* procuro o elemento através da sua id
-                   e imprimo o conteúdo */
-                document.getElementById('saida3').innerHTML = lista;
-            });
 
 
             function remontaAnagrama(anagrama) {
@@ -114,10 +105,10 @@
                             if (base === criaAnagrama(anagramas)) {
                                 anagrama.push(anagrama);
                                 return true;
-             
-             
-                            console.log(remonta2)
-              
+
+
+                                console.log(remonta2)
+
                             }
 
                             /* aqui tiro o print do resultado do anagrama trazido do arquivo json */
